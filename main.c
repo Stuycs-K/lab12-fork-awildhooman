@@ -6,7 +6,7 @@
 #include <errno.h>
 #include <string.h>
 
-int childInstruction() {
+void childInstruction() {
    int randomFile = open("/dev/urandom", O_RDONLY, 0);
    int r = 0;
    read(randomFile, &r, 1);
@@ -15,7 +15,7 @@ int childInstruction() {
    close(randomFile);
    sleep(r);
    printf("%d finished after %dsec\n", getpid(), r);
-   return r;
+   exit(r);
 }
 
 int main() {
@@ -28,7 +28,7 @@ int main() {
     perror("fork failed");
     exit(1);
   } else if (p == 0) {
-    return childInstruction();
+    childInstruction();
   }
 
   p2 = fork();
@@ -36,7 +36,7 @@ int main() {
     perror("fork failed");
     exit(1);
   } else if (p2 == 0) {
-    return childInstruction();
+    childInstruction();
   }
 
   pid_t child = wait(&status);
